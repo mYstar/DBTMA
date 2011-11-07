@@ -1,0 +1,90 @@
+prak1:
+------
+
+-- 1.
+create table Mitarbeiter
+(
+	Mitnr char(5) 	primary key not null,
+	Name	char(10),
+	Vorname	char(10),
+	Ort	char(20),
+	Gebdat	date,
+	Beruf	char(15),
+	Telnr	char(12)
+)
+
+insert into Mitarbeiter select * from depotN.dbo.quelleDB3Mitarbeiter
+
+-- 2.
+create table Projekt
+(
+	Pronr 	char(2) primary key not null,
+	Proname	char(15),
+	Beschreibung	char(30) null,
+	Leiternr char(5) null,
+	foreign key (Leiternr) references Mitarbeiter(Mitnr)
+)
+
+insert into Projekt select * from depotN.dbo.quelleDB3Projekt
+
+--3.
+create table MiPro
+(
+	Mitnr	char(5),
+	foreign key (Mitnr) references Mitarbeiter(Mitnr),
+	Pronr 	char(2),
+	foreign key (Pronr) references Projekt(Pronr),
+	Istvzae	float,
+	Planvzae float,
+	primary key (Mitnr, Pronr)	
+)
+
+insert into MiPro select * from depotN.dbo.quelleDB3MiPro
+
+-- 4.
+done
+
+-- 5.a
+select m.Mitnr, m.Name, m.Vorname, p.Proname
+from Mitarbeiter m, MiPro mp, Projekt p
+where 	m.Mitnr = mp.Mitnr 
+and	mp.Pronr = p.Pronr
+and	p.Pronr = '31'
+
+-- 5.b
+select m.Mitnr, m.Name, ua.summe
+from Mitarbeiter m, (   select mp.Mitnr, Sum(mp.Istvzae) as summe
+                        from MiPro mp
+                        group by mp.Mitnr) ua
+where m.Mitnr = ua.Mitnr
+and ua.summe > 0.8
+
+-- 6.
+create procedure p_proj (@pronr char(5))
+as
+begin
+select m.Name, m.Vorname, m.Telnr
+from Mitarbeiter m, Projekt p
+where p.Pronr = @pronr
+and m.Mitnr = p.Leiternr
+select m.Mitnr, m.Name, m.Vorname 
+from Mitarbeiter m, MiPro mp
+where m.Mitnr = mp.Mitnr
+and mp.Pronr = @pronr
+end
+
+
+-- 7.
+create trigger t_upd_pro on Projekt
+for update as
+begin
+	if update(Leiternr)
+	begin
+		if(select count(*) from MiPro mp, deleted d where mp.Pronr = d.Pronr) <> 0
+		begin
+			print "there are people working on this project"
+			rollback transaction
+		end
+	end	
+end
+
