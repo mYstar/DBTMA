@@ -249,3 +249,43 @@ int main(void)
   dbexit();
   exit(STDEXIT);
 }
+void insert_lebenslauf(void){
+  /*anzeige aller berufe*/
+	dbcmd(dbproc,"SELECT Lebenslauf FROM Mitarbeiter");
+	dbsqlexec(dbproc);
+
+	while (dbresults(dbproc)!=NO_MORE_RESULTS)
+	{
+		dbbind(dbproc,1,STRINGBIND,0,abstract_var);
+		while (dbnextrow(dbproc)!=NO_MORE_ROWS)
+		{
+      strcpy(abstract_var, "Hauptschule");
+      dbwritetext(dbproc_insert, "Mitarbeiter.Lebenslauf",
+          dbtxptr(dbproc, 1), DBTXPLEN, dbtxtimestamp(dbproc,1),TRUE,
+          (DBINT)strlen(abstract_var),abstract_var);
+		}
+	}
+
+}
+void read_lebenslauf(void){
+  long bytes;
+	/*anzeige aller berufe*/
+	dbcmd(dbproc,"SELECT Lebenslauf FROM Mitarbeiter");
+	dbsqlexec(dbproc);
+
+	while (dbresults(dbproc)!=NO_MORE_RESULTS)
+	{
+		while ((bytes= dbreadtext(dbproc,(void *)buf,BUFSIZE)) != NO_MORE_ROWS)
+		{
+      if ( bytes == 0){
+        printf("end of row");
+      }
+      else{
+      buf[bytes] = '\0';
+      printf("%s\n",buf);
+
+      }
+		}
+	}
+
+}
