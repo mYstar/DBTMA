@@ -6,8 +6,8 @@
 #include "sybdbex.h"
 
 /*globale Variablen*/
-DBPROCESS     *dbproc;     
-LOGINREC      *login;       
+DBPROCESS     *dbproc;
+LOGINREC      *login;
 RETCODE        result;
 int i;
 DBCHAR beruf[16];
@@ -65,7 +65,7 @@ int err_handler(DBPROCESS* dbproc, int severity, int dberr, int oserr, char* dbe
 {
   if ((dbproc == NULL) || (DBDEAD(dbproc)))
     return(INT_EXIT);
-  else 
+  else
   {
     fprintf (ERR_CH, "DB-Library error:\n\t%s\n", dberrstr);
 
@@ -79,7 +79,7 @@ int err_handler(DBPROCESS* dbproc, int severity, int dberr, int oserr, char* dbe
 
 int msg_handler(DBPROCESS* dbproc, DBINT msgno, int msgstate, int severity, char* msgtext, char* srvname, char* procname, DBUSMALLINT line)
 {
-  fprintf (ERR_CH, "Msg %ld, Level %d, State %d\n", 
+  fprintf (ERR_CH, "Msg %ld, Level %d, State %d\n",
       msgno, severity, msgstate);
 
   if (strlen(srvname) > 0)
@@ -101,7 +101,7 @@ void get_berufe()
   dbsqlexec(dbproc);
 
   while (dbresults(dbproc)!=NO_MORE_RESULTS)
-  {	
+  {
     i=0;
     dbbind(dbproc,1,NTBSTRINGBIND,15,beruf);
 
@@ -120,9 +120,9 @@ void get_mitarbeiter(char *beruf_in)
   dbsqlexec(dbproc);
 
   while (dbresults(dbproc)!=NO_MORE_RESULTS)
-  {	
+  {
     i=0;
-    dbbind(dbproc,1,NTBSTRINGBIND,5,mitnr);  
+    dbbind(dbproc,1,NTBSTRINGBIND,5,mitnr);
     dbbind(dbproc,2,NTBSTRINGBIND,10,name);
     dbbind(dbproc,3,NTBSTRINGBIND,10,vorname);
 
@@ -141,7 +141,7 @@ void get_all(char *mitnr_in)
   dbsqlexec(dbproc);
 
   while (dbresults(dbproc)!=NO_MORE_RESULTS)
-  {	
+  {
     i=0;
     dbbind(dbproc,1,NTBSTRINGBIND,0,name);
     dbbind(dbproc,2,NTBSTRINGBIND,0,vorname);
@@ -170,7 +170,7 @@ void get_orte()
   dbsqlexec(dbproc);
 
   while (dbresults(dbproc)!=NO_MORE_RESULTS)
-  {	
+  {
     i=0;
     dbbind(dbproc,1,NTBSTRINGBIND,21,ort);
 
@@ -249,43 +249,4 @@ int main(void)
   dbexit();
   exit(STDEXIT);
 }
-void insert_lebenslauf(void){
-  /*anzeige aller berufe*/
-	dbcmd(dbproc,"SELECT Lebenslauf FROM Mitarbeiter");
-	dbsqlexec(dbproc);
 
-	while (dbresults(dbproc)!=NO_MORE_RESULTS)
-	{
-		dbbind(dbproc,1,STRINGBIND,0,abstract_var);
-		while (dbnextrow(dbproc)!=NO_MORE_ROWS)
-		{
-      strcpy(abstract_var, "Hauptschule");
-      dbwritetext(dbproc_insert, "Mitarbeiter.Lebenslauf",
-          dbtxptr(dbproc, 1), DBTXPLEN, dbtxtimestamp(dbproc,1),TRUE,
-          (DBINT)strlen(abstract_var),abstract_var);
-		}
-	}
-
-}
-void read_lebenslauf(void){
-  long bytes;
-	/*anzeige aller berufe*/
-	dbcmd(dbproc,"SELECT Lebenslauf FROM Mitarbeiter");
-	dbsqlexec(dbproc);
-
-	while (dbresults(dbproc)!=NO_MORE_RESULTS)
-	{
-		while ((bytes= dbreadtext(dbproc,(void *)buf,BUFSIZE)) != NO_MORE_ROWS)
-		{
-      if ( bytes == 0){
-        printf("end of row");
-      }
-      else{
-      buf[bytes] = '\0';
-      printf("%s\n",buf);
-
-      }
-		}
-	}
-
-}
