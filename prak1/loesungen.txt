@@ -1,5 +1,5 @@
-prak1:
-------
+praktukum1:
+-----------
 
 -- 1.
 create table Mitarbeiter
@@ -36,7 +36,7 @@ create table MiPro
 	foreign key (Pronr) references Projekt(Pronr),
 	Istvzae	float,
 	Planvzae float,
-	primary key (Mitnr, Pronr)	
+	primary key (Mitnr, Pronr)
 )
 
 insert into MiPro select * from depotN.dbo.quelleDB3MiPro
@@ -47,7 +47,7 @@ done
 -- 5.a
 select m.Mitnr, m.Name, m.Vorname, p.Proname
 from Mitarbeiter m, MiPro mp, Projekt p
-where 	m.Mitnr = mp.Mitnr 
+where 	m.Mitnr = mp.Mitnr
 and	mp.Pronr = p.Pronr
 and	p.Pronr = '31'
 
@@ -67,7 +67,7 @@ select m.Name, m.Vorname, m.Telnr
 from Mitarbeiter m, Projekt p
 where p.Pronr = @pronr
 and m.Mitnr = p.Leiternr
-select m.Mitnr, m.Name, m.Vorname 
+select m.Mitnr, m.Name, m.Vorname
 from Mitarbeiter m, MiPro mp
 where m.Mitnr = mp.Mitnr
 and mp.Pronr = @pronr
@@ -85,6 +85,6 @@ begin
 			print "there are people working on this project"
 			rollback transaction
 		end
-	end	
+	end
 end
 
