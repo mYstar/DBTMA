@@ -1,0 +1,37 @@
+stty erase ^?
+export SYBASE=/sw/sybase
+export DSQUERY=syb125c
+export DBBUFSIZE=1500
+export DSCONSOLE=syb125c
+export DSLISTEN=syb125c
+export LPDEST=lp 
+export SQLBUFFERLEN=8192
+export PATH=/sw/sybase/ASE-12_5/bin:/sw/sybase/OCS-12_5/bin:$PATH:.
+LD_LIBRARY_PATH=/sw/sybase/ASE-12_5/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+SYBASE_ASE=ASE-12_5
+export SYBASE_ASE
+LIBPATH=/sw/sybase/OCS-12_5/lib:/sw/sybase/OCS-12_5/lib3p:/usr/lib:$LIBPATH
+export LIBPATH
+SYBASE_OCS=OCS-12_5
+export SYBASE_OCS
+export SYBEDITOR=vi
+export MAXTEXTLEN=8192
+export SYB_MINDECIMAL=-5000
+export SYB_MAXDECIMAL=5000
+export SYBASE_TERM=xterm_c.ibm
+export SYBFORMLIST=$HOME/f
+export SYBPLATFORM=rs6000
+export LANG=En_US
+echo
+echo "!!! Umgebungsvariablen Ihrer Sybase-Sitzung syb125c auf iaix1!!!"
+echo
+echo "SQL-Server : "$DSQUERY
+echo "Plattform  : "$SYBPLATFORM
+echo "SYBASE     : "$SYBASE
+echo "SYBASE_OCS : "$SYBASE_OCS
+echo "SYBFORMLIST: "$SYBFORMLIST
+echo "DISPLAY    : "$DISPLAY
+echo "Language   : "$LANG
+echo
+
