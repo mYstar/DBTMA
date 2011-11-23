@@ -1,0 +1,63 @@
+# Umgebung zu syb150 von ilux150
+# H.-J. Neumann / P. Klapproth SS2011
+stty erase ^?
+SYBASE_JRE6_32="/u/sw_sybase/sybase_linux/shared/JRE-6_0_6_32BIT"
+export SYBASE_JRE6_32
+SYBASE_JRE6="/u/sw_sybase/sybase_linux/shared/JRE-6_0_6_32BIT"
+export SYBASE_JRE6
+SYBASE="/u/sw_sybase/sybase_linux"
+export SYBASE
+SYBASE_OCS="OCS-15_0"
+export SYBASE_OCS
+INCLUDE="/u/sw_sybase/sybase_linux/OCS-15_0/include":$INCLUDE
+export INCLUDE
+LIB="/u/sw_sybase/sybase_linux/OCS-15_0/lib":$LIB
+export LIB
+PATH="/u/sw_sybase/sybase_linux/OCS-15_0/bin":$PATH
+export PATH
+LD_LIBRARY_PATH="/u/sw_sybase/sybase_linux/OCS-15_0/lib:/u/sw_sybase/sybase_linux_EFB/OCS-15_0/lib3p":$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+PATH="/u/sw_sybase/sybase_linux/UAF-2_5/bin":$PATH
+export PATH
+SYBASE_UA="/u/sw_sybase/sybase_linux/UAF-2_5"
+export SYBASE_UA
+SYBASE_PLATFORM="linux"
+export SYBASE_PLATFORM
+LD_LIBRARY_PATH="/u/sw_sybase/sybase_linux/DataAccess/ODBC/lib":$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+SCROOT="/u/sw_sybase/sybase_linux/shared/sybcentral600"
+export SCROOT
+SYBROOT="/u/sw_sybase/sybase_linux"
+export SYBROOT
+PATH="/u/sw_sybase/sybase_linux/DBISQL/bin":$PATH
+export PATH
+SYBASE_ASE="ASE-15_0"
+export SYBASE_ASE
+PATH="/u/sw_sybase/sybase_linux/ASEP/bin":$PATH
+export PATH
+PATH="/u/sw_sybase/sybase_linux/ASE-15_0/bin:/u/sw_sybase/sybase_linux_EFB/ASE-15_0/install":$PATH
+export PATH
+SYBASE_JRE_RTDS="/u/sw_sybase/sybase_linux/shared/JRE-6_0_6_32BIT"
+export SYBASE_JRE_RTDS
+LD_LIBRARY_PATH="/u/sw_sybase/sybase_linux/ASE-15_0/lib":$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+SYBASE_WS="WS-15_0"
+export SYBASE_WS
+PATH="/u/sw_sybase/sybase_linux/ASE-15_0/jobscheduler/bin":$PATH
+export PATH
+
+export DSQUERY=syb125c
+export DBBUFSIZE=1500
+export DSCONSOLE=syb125c
+export DSLISTEN=syb125c
+export LPDEST=lp
+export SQLBUFFERLEN=8192
+export SYBEDITOR=vi
+export MAXTEXTLEN=8192
+export SYB_MINDECIMAL=-5000
+export SYB_MAXDECIMAL=5000
+export SYBASE_TERM=xterm_c.ibm
+export SYBFORMLIST=$HOME/f
+export SYBPLATFORM=linux
+export LANG=en_US
+
