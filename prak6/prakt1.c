@@ -85,6 +85,12 @@ int msg_handler(DBPROCESS* dbproc, DBINT msgno, int msgstate, int severity, char
 
 int main(void)
 {
+  DBPROCESS *dbproc_server1,*dbproc_server2,*dbproc_commit;
+  LOGINREC *login;
+  DBINT commid;
+  DBCHAR cmdbuf[256], xact_string[128];
+
+  RETCODE ret1, ret2;
 
   /* initialize db library */
   if (dbinit() == FAIL)
@@ -98,13 +104,84 @@ int main(void)
   login = dblogin();
   DBSETLUSER(login, USER);
   DBSETLPWD(login, PASSWORD);
-  DBSETLAPP(login, "store_beispiel");
+  DBSETLAPP(login, "2facecommit");
 
   /* login to server */
-  dbproc = dbopen(login, "syb150");
-  dbuse(dbproc, "ma11s61406");
+  dbproc_server1 = dbopen(login, "syb150");
+  dbproc_server2 = dbopen(login, "syb125c");
+  dbproc_commit  = open_commit(login, "syb150");
+  dbuse(dbproc_server1, "ma11s67766");
+  dbuse(dbproc_server2, "ma11s67766");
+  dbuse(dbproc_commit, "ma11s67766");
 
-  //createStoredProc();
+  /* start recording the distributed transactions */
+  commid = start_xact(dbproc_commit, "prakt1", "face", 2);
+  build_xact_string("face", "syb150", commid, xact_string);
+
+  /* build command buffer */
+  sprintf(cmdbuf, "BEGIN TRANSACTION %s", xact_string);
+  dbcmd(dbproc_server1, cmdbuf);
+  dbcmd(dbproc_server2, cmdbuf);
+
+  /* execute the commands */
+  dbsqlexec(dbproc_server1);
+  dbsqlexec(dbproc_server2);
+
+  /* create the sql command */
+  sprintf(cmdbuf, "UPDATE Mitarbeiter SET Gebdat = getdate() WHERE Name = 'Fuchs'");
+  dbcmd(dbproc_server1, cmdbuf);
+  dbcmd(dbproc_server2, cmdbuf);
+
+  /* execute the commands */
+  ret1 = dbsqlexec(dbproc_server1);
+  ret2 = dbsqlexec(dbproc_server2);
+  if(ret1 == FAIL || ret2 == FAIL)
+  {
+    abort_xact(dbproc_commit, commid);
+    /*error_function();*/
+  }
+
+  /* create next sql command */
+  sprintf(cmdbuf, "PREPARE TRANSACTION");
+  dbcmd(dbproc_server1, cmdbuf);
+  dbcmd(dbproc_server2, cmdbuf);
+
+  /* execute the commands */
+  ret1 = dbsqlexec(dbproc_server1);
+  ret2 = dbsqlexec(dbproc_server2);
+  if(ret1 == FAIL || ret2 == FAIL)
+  {
+    abort_xact(dbproc_commit, commid);
+    /*error_function();*/
+  }
+
+  if(commit_xact(dbproc_commit, commid) == FAIL)
+  {
+    abort_xact(dbproc_commit, commid);
+    /*error_function();*/
+  }
+
+  /* create next sql command */
+  sprintf(cmdbuf, "COMMIT TRANSACTION");
+  dbcmd(dbproc_server1, cmdbuf);
+
+  /* execute the commands */
+  ret1 = dbsqlexec(dbproc_server1);
+  if(ret1 == FAIL)
+  {
+    remove_xact(dbproc_commit, commid, 1);
+    /*error_function();*/
+  }
+
+  dbcmd(dbproc_server2, cmdbuf);
+
+  /* execute the commands */
+  ret2 = dbsqlexec(dbproc_server1);
+  if(ret2 == FAIL)
+  {
+    remove_xact(dbproc_commit, commid, 1);
+    /*error_function();*/
+  }
 
   /* dbexit(STDEXIT); */
   dbexit();
