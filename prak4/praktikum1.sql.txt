@@ -1,0 +1,54 @@
+use ma11s67778
+
+1.
+create table Mitarbeiter
+( Mitnr char(5), Name char(20), Vorname char(20), Ort char(20), Gebdat date,
+ Beruf char(25), Telnr char(12), PRIMARY KEY (Mitnr))
+ 
+2./3.
+select * into Projekt from depotN.dbo.quelleDB3Projekt
+select * into MiPro from depotN.dbo.quelleDB3MiPro
+alter table Projekt add PRIMARY KEY (Pronr)
+alter table MiPro add PRIMARY KEY (Mitnr,Pronr)
+
+//select * from depotN.dbo.quelleDB3Mitarbeiter
+
+4.
+alter table MiPro
+add foreign key (Pronr)
+references Projekt (Pronr)
+
+
+alter table Mitarbeiter
+add foreign key (Mitnr)
+references MiPro (Mitnr)
+5.a)
+select m.Mitnr, m.Name, m.Vorname, p.Proname from Projekt p, Mitarbeiter m, MiPro
+where MiPro.Mitnr = m.Mitnr and MiPro.Pronr = p.Pronr and p.Pronr = "31"
+5.b)
+
+select m.Mitnr, m.Name, m.Vorname, SUM(MiPro.Istvzae) from Projekt p, Mitarbeiter m, MiPro
+where MiPro.Mitnr = m.Mitnr and MiPro.Pronr = p.Pronr
+GROUP BY m.Mitnr
+Having SUM(MiPro.Istvzae) > 0.8
+
+6.
+create proc p1 @Pronr varchar(3) 
+as 
+declare @msg char(50)
+if exists( select Pronr from Projekt where Pronr = @Pronr)
+begin
+    select Mitnr, Name, Telnr from Mitarbeiter
+    where Mitnr = (select Leiternr from Projekt where Pronr = @Pronr)
+    select m.Mitnr, m.Name, m.Vorname, p.Proname from Projekt p, Mitarbeiter m, MiPro
+    where MiPro.Mitnr = m.Mitnr and MiPro.Pronr = p.Pronr and p.Pronr = @Pronr
+end
+else
+begin
+select @msg =  "Projekt nummer:" + @Pronr + "nicht vorhanden!"
+    print @msg
+end
+
+7.
+
+
